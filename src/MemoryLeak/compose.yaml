@@ -1,0 +1,12 @@
+﻿services:
+  memoryleak:
+    build: .
+    image: memoryleak
+    container_name: memoryleak_container
+    ports:
+      - "5001:5001"
+      - "5002:5002"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+

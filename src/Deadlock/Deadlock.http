@@ -1,0 +1,6 @@
+@Deadlock_HostAddress = http://localhost:5249
+
+GET {{Deadlock_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
