@@ -1,7 +1,11 @@
+using System.Collections.Concurrent;
+
 namespace MemoryLeak.Services.Cache;
 
-public class BadCacheManager(IMemoryCache cache, ILogger<BadCacheManager> logger)
+public class BadCacheManager(ILogger<BadCacheManager> logger)
 {
+    private readonly ConcurrentDictionary<string, object> _cache = new();
+    
     /// <summary>
     /// Bad implementation
     /// </summary>
@@ -12,16 +16,16 @@ public class BadCacheManager(IMemoryCache cache, ILogger<BadCacheManager> logger
         //Artificial delay to simulate async I/O-bound operation
         await Task.Delay(1000);
         
-        if (cache.TryGetValue(cacheKey, out T? cachedValue))
+        if (_cache.TryGetValue(cacheKey, out var cachedValue))
         {
             logger.LogInformation($"Cache hit for key: {cacheKey}");
-            return cachedValue;
+            return (T?)cachedValue;
         }
 
         logger.LogWarning($"Cache miss for key: {cacheKey}. Adding to cache.");
         
-        // We don't set any expiration params etc, our object will live in cache forever!
-        cache.Set(cacheKey, value);
+        // Our object will live in cache forever!
+        _cache.GetOrAdd(cacheKey, value!);
         
         logger.LogInformation($"Added new value to cache with key: {cacheKey}");
         

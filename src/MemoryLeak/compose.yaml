@@ -9,4 +9,12 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5001
-
+      - DOTNET_EnableDiagnostics=1
+    pid: "host"              
+    cap_add:
+      - SYS_PTRACE           
+    tty: true 
+    deploy:
+      resources:
+        limits:
+          memory: 50M

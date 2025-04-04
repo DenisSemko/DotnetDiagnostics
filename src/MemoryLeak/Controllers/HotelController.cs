@@ -10,9 +10,11 @@ public class HotelController(IHotelService hotelService)
     /// <summary>
     /// Scenario 1 with Good Caching
     /// </summary>
-    [HttpGet("good/{hotelId}")]
-    public async Task<IResult> GetOrCreateGood(Guid hotelId)
+    [HttpGet("good")]
+    public async Task<IResult> GetOrCreateGood()
     {
+        //Random Id (but normally it should be in the request)
+        var hotelId = Guid.NewGuid();
         var hotel = await hotelService.GetOrCreateHotelAsyncGood(hotelId, new Hotel { Id = hotelId, Name = "Hotel A" });
 
         return Results.Ok(hotel);
@@ -21,10 +23,14 @@ public class HotelController(IHotelService hotelService)
     /// <summary>
     /// Scenario 1 with Bad Caching
     /// </summary>
-    [HttpGet("bad/{hotelId}")]
-    public async Task<IResult> GetOrCreateBad(Guid hotelId)
+    [HttpGet("bad")]
+    public async Task<IResult> GetOrCreateBad()
     {
-        var hotel = await hotelService.GetOrCreateHotelAsyncBad(hotelId, new Hotel { Id = hotelId, Name = "Hotel A" });
+        //Random Id (but normally it should be in the request)
+        var hotelId = Guid.NewGuid();
+        
+        //creating object with 10MB payload
+        var hotel = await hotelService.GetOrCreateHotelAsyncBad(hotelId, new Hotel { Id = hotelId, Name = "Hotel A", Payload = new byte[10 * 1024 * 1024] });
 
         return Results.Ok(hotel);
     }
